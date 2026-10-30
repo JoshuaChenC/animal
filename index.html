@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="zh-TW" id="html-root">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>動物奇幻分類大作戰 - 國小自然科學趣味互動學習網</title>
+    
+    <!-- 引入 Firebase App 與 Realtime Database SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --secondary: #0ea5e9;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --danger: #f43f5e;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --border-radius: 24px;
+            --shadow: 0 20px 35px -10px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+
+            /* 標準字預設大小變數 */
+            --fs-title: 2.3rem;
+            --fs-body: 1rem;
+            --fs-btn: 1.15rem;
+            --fs-card-title: 1.2rem;
+        }
+
+        /* 放大字等級 */
+        body.font-scale-lg {
+            --fs-title: 2.7rem;
+            --fs-body: 1.18rem;
+            --fs-btn: 1.3rem;
+            --fs-card-title: 1.35rem;
+        }
+        /* 特大字等級 */
+        body.font-scale-xl {
+            --fs-title: 3.1rem;
+            --fs-body: 1.35rem;
+            --fs-btn: 1.45rem;
+            --fs-card-title: 1.5rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            font-size: var(--fs-body);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 840px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: var(--fs-title);
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        /* 標題下方的獨立控制列 */
+        .audio-controls {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 4px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .audio-toggle-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            padding: 6px 14px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            transition: var(--transition);
+        }
+        .audio-toggle-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* 玩家狀態列 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            padding: 16px 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            max-width: 840px;
+            width: 100%;
+            margin-bottom: 16px;
+            gap: 12px;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            flex-shrink: 0;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .avatar:hover {
+            transform: scale(1.08);
+            border-color: var(--accent);
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .stats {
+            display: flex;
+            gap: 12px;
+            font-weight: 700;
+        }
+
+        .stat-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 8px 14px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+        }
+
+        .stat-item span {
+            color: var(--text-main);
+            font-weight: 800;
+        }
+
+        /* 主導覽列 */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            max-width: 840px;
+            width: 100%;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+        }
+        .nav-tabs::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn {
+            flex: 1;
+            padding: 14px 18px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-weight: 700;
+            font-size: var(--fs-btn);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .nav-btn:hover {
+            color: var(--primary);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        /* 內容容器 */
+        .container {
+            max-width: 840px;
+            width: 100%;
+            background: var(--card-bg);
+            padding: 28px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .panel {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .panel.active {
+            display: flex;
+        }
+
+        /* 貓頭鷹博士透明無白邊設計 */
+        .doctor-box {
+            display: flex;
+            gap: 16px;
+            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+            border: 2px solid #bbf7d0;
+            border-radius: var(--border-radius);
+            padding: 16px 22px;
+            margin-bottom: 24px;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05);
+        }
+
+        .doctor-avatar {
+            width: 90px;
+            height: auto;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .doctor-avatar img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            background: transparent;
+        }
+
+        .doctor-speech {
+            font-size: var(--fs-body);
+            line-height: 1.6;
+            color: #166534;
+            font-weight: 600;
+        }
+
+        /* 1. 知識補給站樣式 */
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .guide-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: 22px;
+            text-align: left;
+            transition: var(--transition);
+        }
+
+        .guide-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-size: var(--fs-card-title);
+            font-weight: 800;
+        }
+
+        .guide-card p {
+            color: var(--text-secondary);
+            font-size: var(--fs-body);
+            line-height: 1.6;
+        }
+
+        .example-box {
+            margin-top: 12px;
+            background: #ffffff;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 10px 14px;
+            color: var(--text-main);
+            font-size: 0.92rem;
+            font-weight: 700;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .special-section {
+            margin-top: 28px;
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 2px solid #fcd34d;
+            border-radius: 18px;
+            padding: 24px;
+        }
+
+        .special-section h3 {
+            color: #b45309;
+            margin-bottom: 16px;
+            font-size: var(--fs-card-title);
+            font-weight: 900;
+        }
+
+        .special-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .special-card {
+            background: white;
+            border: 1px solid #fde68a;
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.08);
+        }
+
+        .special-card img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid #fcd34d;
+            flex-shrink: 0;
+            background: #fef3c7;
+        }
+
+        .special-card-text {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #92400e;
+            font-weight: 700;
+        }
+
+        /* 2. 冒險闖關樣式 */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            font-weight: 800;
+            color: var(--text-secondary);
+        }
+
+        .animal-card-display {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 22px;
+            text-align: center;
+            margin-bottom: 22px;
+        }
+
+        .animal-img-container {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            max-height: 340px;
+            margin: 0 auto 16px auto;
+            border-radius: 16px;
+            background: #ffffff;
+            border: 3px solid var(--primary);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.15);
+        }
+
+        .animal-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .animal-name {
+            font-size: calc(var(--fs-title) * 0.9);
+            font-weight: 900;
+            color: var(--text-main);
+            margin-bottom: 6px;
+        }
+
+        .animal-hint {
+            color: var(--text-secondary);
+            font-size: var(--fs-body);
+            font-weight: 600;
+        }
+
+        .question-group {
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            font-weight: 800;
+            margin-bottom: 12px;
+            font-size: calc(var(--fs-body) * 1.15);
+            color: var(--text-main);
+        }
+
+        .options-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .choice-btn {
+            padding: 18px 22px;
+            border: 2px solid #cbd5e1;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            font-size: var(--fs-btn);
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--text-main);
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 60px;
+        }
+
+        .choice-btn:hover {
+            border-color: var(--primary);
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.12);
+        }
+
+        .choice-btn.selected-reproduction {
+            background: linear-gradient(135deg, #ec4899, #db2777) !important;
+            border-color: #be185d !important;
+            color: white !important;
+            box-shadow: 0 6px 18px rgba(236, 72, 153, 0.35) !important;
+        }
+
+        .choice-btn.selected-temperature {
+            background: linear-gradient(135deg, #f97316, #ea580c) !important;
+            border-color: #c2410c !important;
+            color: white !important;
+            box-shadow: 0 6px 18px rgba(249, 115, 22, 0.35) !important;
+        }
+
+        .action-btn {
+            margin-top: 10px;
+            padding: 18px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: var(--fs-btn);
+            font-weight: 800;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.3);
+            min-height: 60px;
+        }
+
+        .action-btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        /* 3. 魔王挑戰打怪畫面樣式 */
+        .boss-battle-arena {
+            border: 3px solid #fda4af;
+            border-radius: var(--border-radius);
+            padding: 28px 22px 22px 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s ease;
+        }
+
+        .boss-battle-arena::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(255, 255, 255, 0.50);
+            z-index: 1;
+        }
+
+        .boss-battle-arena > * {
+            position: relative;
+            z-index: 2;
+        }
+
+        .battle-visual-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .fighter-card {
+            text-align: center;
+            width: 170px;
+        }
+
+        .fighter-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 0;
+            border: none;
+            object-fit: contain;
+            background: transparent;
+            box-shadow: none;
+            margin: 0 auto 6px auto;
+        }
+
+        .fighter-name {
+            font-weight: 900;
+            font-size: calc(var(--fs-body) * 1.15);
+            color: var(--text-main);
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .vs-badge {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #e11d48;
+            text-shadow: 0 2px 4px rgba(255,255,255,0.9);
+        }
+
+        @keyframes playerAttackMove {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(50px) scale(1.1); }
+            100% { transform: translateX(0); }
+        }
+        .animate-player-attack {
+            animation: playerAttackMove 0.4s ease;
+        }
+
+        @keyframes bossShake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-12px); }
+            40%, 80% { transform: translateX(12px); }
+        }
+        .animate-boss-shake {
+            animation: bossShake 0.4s ease;
+        }
+
+        @keyframes playerHit {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-20px); filter: brightness(1.5) sepia(1); }
+        }
+        .animate-player-hit {
+            animation: playerHit 0.4s ease;
+        }
+
+        .hp-bar-wrapper {
+            margin-top: 6px;
+        }
+
+        .hp-bar-container {
+            width: 100%;
+            background: rgba(226, 232, 240, 0.9);
+            height: 14px;
+            border-radius: 7px;
+            overflow: hidden;
+            border: 2px solid #94a3b8;
+        }
+
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #34d399);
+            width: 100%;
+            transition: width 0.4s ease;
+        }
+
+        .boss-hp-fill {
+            background: linear-gradient(90deg, #f43f5e, #fb7185);
+        }
+
+        .quiz-question-box {
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #f43f5e;
+            padding: 20px 22px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: calc(var(--fs-body) * 1.15);
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #881337;
+            box-shadow: 0 8px 25px rgba(244, 63, 94, 0.15);
+        }
+
+        .quiz-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        /* 成就區樣式 */
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .badge-card {
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 18px;
+            padding: 22px 14px;
+            text-align: center;
+            opacity: 0.45;
+            transition: var(--transition);
+        }
+
+        .badge-card.unlocked {
+            background: linear-gradient(135deg, #fffbeb, #fef3c7);
+            border: 2px solid #f59e0b;
+            opacity: 1;
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .badge-icon {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .badge-title {
+            font-weight: 900;
+            font-size: var(--fs-card-title);
+            margin-bottom: 4px;
+            color: var(--text-main);
+        }
+
+        .badge-desc {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        /* 彈窗樣式 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+            padding: 16px;
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 36px 28px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 440px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes modalPop {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .modal-text {
+            font-size: var(--fs-body);
+            margin-bottom: 24px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .char-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .char-option-card {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .char-option-card.locked {
+            opacity: 0.4;
+            filter: grayscale(1);
+            cursor: not-allowed;
+        }
+
+        .char-option-card.selected {
+            border-color: var(--primary);
+            background: #eef2ff;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .char-option-card img {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+            margin-bottom: 6px;
+        }
+
+        .char-option-name {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        /* 版權聲明與即時遊玩人次統計區 */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 28px;
+            padding: 16px 8px;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-top: 2px solid #e2e8f0;
+            width: 100%;
+            max-width: 840px;
+        }
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 800;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .live-stats {
+            display: flex;
+            gap: 14px;
+            font-size: 0.88rem;
+            background: #f1f5f9;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid #cbd5e1;
+        }
+        .live-stats span {
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        @media(max-width: 480px) {
+            body { padding: 10px; }
+            .container { padding: 16px; }
+            h1 { font-size: 1.8rem; }
+            .options-row { grid-template-columns: 1fr; gap: 12px; }
+            .status-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .stats { justify-content: space-between; }
+            .char-grid { grid-template-columns: repeat(2, 1fr); }
+            .fighter-card { width: 130px; }
+            .fighter-avatar { width: 130px; height: 130px; }
+            .guide-grid, .special-grid { grid-template-columns: 1fr; }
+            footer { flex-direction: column; text-align: center; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 自訂背景音樂音檔 (fighting.mp3)，預設開啟 -->
+    <audio id="bgm-audio" src="fighting.mp3" preload="auto" loop></audio>
+
+    <header>
+        <h1>動物奇幻分類大作戰</h1>
+        <!-- 標題下方的獨立控制列 -->
+        <div class="audio-controls">
+            <button class="audio-toggle-btn" id="font-toggle-btn" onclick="toggleFontSize()">🔠 放大字</button>
+            <button class="audio-toggle-btn" id="audio-toggle" onclick="toggleAudio()">🔊 音效</button>
+            <button class="audio-toggle-btn" id="bgm-toggle" onclick="toggleBGM()">🎵 BGM:開</button>
+        </div>
+    </header>
+
+    <!-- 玩家狀態列 -->
+    <div class="status-bar">
+        <div class="player-info">
+            <div class="avatar" title="點擊更換角色" onclick="openCharModal()">
+                <img id="header-level-img" src="images/實習小博士.png" alt="玩家頭銜" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\'><circle cx=\'32\' cy=\'32\' r=\'32\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'20\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
+            </div>
+            <div>
+                <!-- 明顯放大的角色頭銜字體 -->
+                <div style="font-weight: 900; font-size: 1.35rem;" id="player-title">實習小博士</div>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat-item">⭐ XP: <span id="xp-val">0</span></div>
+            <div class="stat-item">🔥 連擊: <span id="combo-val">0</span> Combo</div>
+        </div>
+    </div>
+
+    <!-- 主導覽列 -->
+    <div class="nav-tabs">
+        <button class="nav-btn active" onclick="switchTab('guide')">📖 知識補給站</button>
+        <button class="nav-btn" onclick="switchTab('challenge')">⚔️ 冒險闖關</button>
+        <button class="nav-btn" onclick="switchTab('boss')">👹 魔王挑戰</button>
+        <button class="nav-btn" onclick="switchTab('badges')">🏆 成就徽章</button>
+    </div>
+
+    <!-- 內容容器 -->
+    <div class="container">
+
+        <!-- 貓頭鷹博士直接站在左邊（透明無白邊對話框） -->
+        <div class="doctor-box" id="doctor-container">
+            <div class="doctor-avatar">
+                <img id="doctor-img" src="images/貓頭鷹博士.png" alt="貓頭鷹博士" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\'><text x=\'50%\' y=\'50%\' font-size=\'50\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦉</text></svg>'">
+            </div>
+            <div class="doctor-speech" id="doctor-speech">
+                <b>貓頭鷹博士：</b>「歡迎來到知識補給站！複習完觀念就可以去挑戰冒險與魔王關卡囉！」
+            </div>
+        </div>
+
+        <!-- 1. 知識補給站面板 -->
+        <div id="guide-panel" class="panel active">
+            <h2 style="margin-bottom: 18px; color: var(--primary); font-weight: 900;">核心觀念</h2>
+            <div class="guide-grid">
+                <!-- 卵生動物 -->
+                <div class="guide-card">
+                    <h3>卵生動物</h3>
+                    <p>媽媽先產卵，寶寶會在蛋裡吸收卵黃養分，長大後破殼而出。</p>
+                    <div class="example-box">哺乳類動物、少數魚類</div>
+                </div>
+                <!-- 胎生動物 -->
+                <div class="guide-card">
+                    <h3>胎生動物</h3>
+                    <p>寶寶在媽媽肚子裡長大才出生，會喝母乳。</p>
+                    <div class="example-box">多數魚類、單孔目哺乳類、鳥類、爬蟲類、兩生類、昆蟲與無脊椎動物</div>
+                </div>
+                <!-- 內溫動物 -->
+                <div class="guide-card">
+                    <h3>內溫動物</h3>
+                    <p>不管天氣多冷多熱，身體內部會產生熱能來維持體溫。</p>
+                    <div class="example-box">哺乳類、鳥類</div>
+                </div>
+                <!-- 外溫動物 -->
+                <div class="guide-card">
+                    <h3>外溫動物</h3>
+                    <p>從外界環境獲得熱能，天氣冷牠們會想冬眠;天氣熱才會活躍。</p>
+                    <div class="example-box">魚類、爬蟲類、兩生類、昆蟲與無脊椎動物</div>
+                </div>
+            </div>
+
+            <!-- 小博士偷偷告訴你 -->
+            <div class="special-section">
+                <h3>💡 小博士偷偷告訴你（特別區）</h3>
+                <div class="special-grid">
+                    <div class="special-card">
+                        <img src="images/特例1.png" alt="鯨魚與海豚" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐳</text></svg>'">
+                        <div class="special-card-text"><b>鯨魚與海豚</b>是住在水裡的哺乳類 (胎生＋內溫)。</div>
+                    </div>
+                    <div class="special-card">
+                        <img src="images/特例2.png" alt="企鵝" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐧</text></svg>'">
+                        <div class="special-card-text"><b>企鵝</b>是不會飛的鳥 (卵生＋內溫)。</div>
+                    </div>
+                    <div class="special-card">
+                        <img src="images/特例3.png" alt="蝙蝠" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦇</text></svg>'">
+                        <div class="special-card-text"><b>蝙蝠</b>是會飛的哺乳類 (胎生＋內溫)。</div>
+                    </div>
+                    <div class="special-card">
+                        <img src="images/特例4.png" alt="蜘蛛" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🕷️</text></svg>'">
+                        <div class="special-card-text"><b>蜘蛛</b>是無脊椎的節肢動物 (屬於卵生＋外溫)。</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 冒險闖關面板 -->
+        <div id="challenge-panel" class="panel">
+            <div class="game-header">
+                <div>分類關卡進度：第 <span id="current-round">1</span> / 15 題</div>
+            </div>
+
+            <div class="animal-card-display">
+                <div class="animal-img-container">
+                    <img id="animal-img" src="" alt="動物圖片" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'450\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' font-size=\'32\' fill=\'%2364748b\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐾 請確認 images/動物名稱.jpg</text></svg>'">
+                </div>
+                <div class="animal-name" id="animal-name">載入中...</div>
+                <div class="animal-hint" id="animal-hint">請為牠做出正確的生殖與體溫分類！</div>
+            </div>
+
+            <!-- 生殖選擇 -->
+            <div class="question-group">
+                <div class="question-title">1. 請選擇生殖方式：</div>
+                <div class="options-row">
+                    <button class="choice-btn" id="rep-egg" onclick="selectReproduction('卵生')">卵生</button>
+                    <button class="choice-btn" id="rep-viv" onclick="selectReproduction('胎生')">胎生</button>
+                </div>
+            </div>
+
+            <!-- 體溫選擇 -->
+            <div class="question-group">
+                <div class="question-title">2. 請選擇體溫調節：</div>
+                <div class="options-row">
+                    <button class="choice-btn" id="temp-endo" onclick="selectTemperature('內溫')">內溫動物</button>
+                    <button class="choice-btn" id="temp-ecto" onclick="selectTemperature('外溫')">外溫動物</button>
+                </div>
+            </div>
+
+            <button class="action-btn" id="submit-btn" onclick="checkAnswer()">送出答案</button>
+        </div>
+
+        <!-- 3. 魔王挑戰面板 -->
+        <div id="boss-panel" class="panel">
+            <div class="boss-battle-arena" id="boss-arena-box">
+                <div class="battle-visual-container">
+                    <!-- 玩家打怪角色 -->
+                    <div class="fighter-card" id="player-fighter">
+                        <img class="fighter-avatar" id="battle-player-img" src="images/實習小博士(戰).png" alt="玩家角色" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
+                        <div class="fighter-name" id="battle-player-title">實習小博士</div>
+                        <div class="hp-bar-wrapper">
+                            <div style="font-size: 0.8rem; color: #065f46; font-weight:900;">HP: <span id="player-hp-text">100</span></div>
+                            <div class="hp-bar-container">
+                                <div class="hp-fill" id="player-hp-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="vs-badge">VS</div>
+
+                    <!-- 魔王角色 (靜止登場) -->
+                    <div class="fighter-card" id="boss-fighter">
+                        <img class="fighter-avatar" id="battle-boss-img" src="images/杜倫.png" alt="魔王" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%23f43f5e\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>👹</text></svg>'">
+                        <div class="fighter-name" id="boss-name-label">冰霜巨獸</div>
+                        <div class="hp-bar-wrapper">
+                            <div style="font-size: 0.8rem; color: #9f1239; font-weight:900;">魔王血量</div>
+                            <div class="hp-bar-container">
+                                <div class="hp-fill boss-hp-fill" id="boss-hp-fill" style="width: 100%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; font-weight: 900; color: #9f1239; font-size: 1.05rem; margin-bottom: 8px; text-shadow: 0 1px 2px rgba(255,255,255,0.9);">
+                    第 <span id="boss-stage-num">1</span> 關 ｜ 題目進度：第 <span id="boss-q-num">1</span> / <span id="boss-total-q">4</span> 題
+                </div>
+            </div>
+
+            <div class="quiz-question-box" id="boss-question-text">
+                載入魔王考題中...
+            </div>
+            <div class="quiz-options-list" id="boss-options-list"></div>
+        </div>
+
+        <!-- 4. 成就徽章面板 -->
+        <div id="badges-panel" class="panel">
+            <h2 style="margin-bottom: 8px; color: var(--primary); font-weight: 900;">🏆 高難度榮譽成就系統</h2>
+            <p style="color: var(--text-secondary); margin-bottom: 22px;">累積 XP 升級頭銜解鎖對應角色，達成以下極限條件解鎖徽章！</p>
+            <div class="badges-grid">
+                <div class="badge-card" id="badge-1">
+                    <div class="badge-icon">🔥</div>
+                    <div class="badge-title">20連擊大師</div>
+                    <div class="badge-desc">全域挑戰達成 20 連擊 Combo</div>
+                </div>
+                <div class="badge-card" id="badge-2">
+                    <div class="badge-icon">👑</div>
+                    <div class="badge-title">無傷無敵戰神</div>
+                    <div class="badge-desc">三關全破且每關魔王對戰維持 100 滿血</div>
+                </div>
+                <div class="badge-card" id="badge-3">
+                    <div class="badge-icon">💎</div>
+                    <div class="badge-title">傳奇生物大師</div>
+                    <div class="badge-desc">累積 XP 達到 1500 點以上</div>
+                </div>
+                <div class="badge-card" id="badge-4">
+                    <div class="badge-icon">⚡</div>
+                    <div class="badge-title">全知全能生物學家</div>
+                    <div class="badge-desc">同時達成以上三項極限成就</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 版權歸屬 Footer 與即時遊玩人次統計 -->
+    <footer>
+        <div>版權所有 © 2026 陳老爹的自然教室 ｜ <a href="https://www.facebook.com/profile.php?id=100084841621068" target="_blank">Facebook 粉絲專頁</a> ｜ 僅供教學使用</div>
+        <div class="live-stats">
+            <span>總遊玩：<b id="total-players-val">1</b> 人</span>
+            <span>在線：<b id="online-users-val">1</b> 人</span>
+        </div>
+    </footer>
+
+    <!-- 角色選擇彈窗 (Character Selection Modal) -->
+    <div class="modal" id="char-modal">
+        <div class="modal-content">
+            <div class="modal-title">🎭 選擇你的角色</div>
+            <div class="modal-text">點擊選擇你已解鎖的角色形象：</div>
+            <div class="char-grid" id="char-grid"></div>
+            <button class="action-btn" onclick="closeCharModal()" style="width: 100%;">確認選擇</button>
+        </div>
+    </div>
+
+    <!-- 結算彈窗 -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">闖關成功！</div>
+            <div class="modal-text" id="modal-text">太棒了！你獲得了積分與 XP！</div>
+            <button class="action-btn" onclick="closeModal()" style="width: 100%;">確定</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 老師專屬的 Firebase 資料庫連線設定 ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyB65jDKFpa7GkB1hWxE_DPv98jzjVDwJ_U",
+            authDomain: "animalgame-67b2f.firebaseapp.com",
+            databaseURL: "https://animalgame-67b2f-default-rtdb.firebaseio.com",
+            projectId: "animalgame-67b2f",
+            storageBucket: "animalgame-67b2f.firebasestorage.app",
+            messagingSenderId: "858605255518",
+            appId: "1:858605255518:web:211ab4c0cd8b359ba6adcf",
+            measurementId: "G-0834XDT40V"
+        };
+
+        // 初始化 Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // 1. 每次有人打開網頁，總遊玩人數自動 +1
+        db.ref('game_stats/total_players').transaction(count => (count || 0) + 1);
+
+        // 2. 即時更新畫面上的總遊玩人數
+        db.ref('game_stats/total_players').on('value', snapshot => {
+            const total = snapshot.val() || 1;
+            document.getElementById('total-players-val').innerText = total;
+        });
+
+        // 3. 即時計算目前在線人數
+        db.ref('.info/connected').on('value', snap => {
+            if (snap.val() === true) {
+                const userRef = db.ref('game_stats/online_users').push();
+                userRef.onDisconnect().remove();
+                userRef.set(true);
+            }
+        });
+
+        db.ref('game_stats/online_users').on('value', snapshot => {
+            const onlineCount = snapshot.numChildren() || 1;
+            document.getElementById('online-users-val').innerText = onlineCount;
+        });
+
+        // 音效與背景音樂（BGM）控制系統
+        let soundEnabled = true;
+        let bgmEnabled = true; // 預設開啟 BGM
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const bgmAudio = document.getElementById('bgm-audio');
+
+        // 字體大小獨立縮放控制 (循環順序：放大字 -> 特大字 -> 標準字)
+        let fontScaleIndex = 0; // 0: 標準, 1: 放大, 2: 特大
+        const bodyTag = document.body;
+        const fontNames = ['🔠 放大字', '🔠 特大字', '🔠 標準字'];
+
+        function toggleFontSize() {
+            playSound('click');
+            fontScaleIndex = (fontScaleIndex + 1) % 3;
+            bodyTag.classList.remove('font-scale-lg', 'font-scale-xl');
+            if (fontScaleIndex === 1) {
+                bodyTag.classList.add('font-scale-lg');
+            } else if (fontScaleIndex === 2) {
+                bodyTag.classList.add('font-scale-xl');
+            }
+            document.getElementById('font-toggle-btn').innerText = fontNames[fontScaleIndex];
+        }
+
+        function setDoctorExpression(expr) {
+            const docImg = document.getElementById('doctor-img');
+            if (!docImg) return;
+            if (expr === 'happy') {
+                docImg.src = "images/貓頭鷹博士(開心).png";
+            } else if (expr === 'sad') {
+                docImg.src = "images/貓頭鷹博士(哭).png";
+            } else {
+                docImg.src = "images/貓頭鷹博士.png";
+            }
+        }
+
+        // 頁面載入後自動嘗試播放 BGM
+        window.addEventListener('DOMContentLoaded', () => {
+            bgmAudio.play().then(() => {
+                bgmEnabled = true;
+                document.getElementById('bgm-toggle').innerText = "🎵 BGM:開";
+            }).catch(e => {
+                const unlockBGM = () => {
+                    if (bgmEnabled) {
+                        bgmAudio.play().catch(() => {});
+                    }
+                    window.removeEventListener('click', unlockBGM);
+                    window.removeEventListener('keydown', unlockBGM);
+                };
+                window.addEventListener('click', unlockBGM);
+                window.addEventListener('keydown', unlockBGM);
+            });
+        });
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const btn = document.getElementById('audio-toggle');
+            btn.innerText = soundEnabled ? "🔊 音效" : "🔇 音效";
+        }
+
+        function toggleBGM() {
+            bgmEnabled = !bgmEnabled;
+            const btn = document.getElementById('bgm-toggle');
+            btn.innerText = bgmEnabled ? "🎵 BGM:開" : "🔇 BGM:關";
+            if (bgmEnabled) {
+                bgmAudio.play().catch(e => {});
+            } else {
+                bgmAudio.pause();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            const osc = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.08);
+                gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } else if (type === 'hit') {
+                // 打擊特效音效 (清脆震撼的打擊感)
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
+                gainNode.gain.setValueAtTime(0.25, audioCtx.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'win') {
+                const notes = [440, 554.37, 659.25, 880];
+                notes.forEach((freq, i) => {
+                    const o = audioCtx.createOscillator();
+                    const g = audioCtx.createGain();
+                    o.connect(g);
+                    g.connect(audioCtx.destination);
+                    o.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1);
+                    g.gain.setValueAtTime(0.15, audioCtx.currentTime + i * 0.1);
+                    g.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + i * 0.1 + 0.3);
+                    o.start(audioCtx.currentTime + i * 0.1);
+                    o.stop(audioCtx.currentTime + i * 0.1 + 0.3);
+                });
+            }
+        }
+
+        // 19 種指定動物題庫
+        const animalsData = [
+            { name: "小狗", rep: "胎生", temp: "內溫", hint: "人類最忠實的哺乳類好朋友", img: "images/小狗.jpg" },
+            { name: "雞", rep: "卵生", temp: "內溫", hint: "會生蛋的鳥類代表", img: "images/雞.jpg" },
+            { name: "青蛙", rep: "卵生", temp: "外溫", hint: "幼體是蝌蚪，喜歡潮濕環境", img: "images/青蛙.jpg" },
+            { name: "烏龜", rep: "卵生", temp: "外溫", hint: "背著硬殼，冬天常晒太陽或休眠", img: "images/烏龜.jpg" },
+            { name: "鯨魚", rep: "胎生", temp: "內溫", hint: "住在海裡，但它是哺乳類！", img: "images/鯨魚.jpg" },
+            { name: "企鵝", rep: "卵生", temp: "內溫", hint: "住在冰天雪地不會飛的鳥類！", img: "images/企鵝.jpg" },
+            { name: "蝙蝠", rep: "胎生", temp: "內溫", hint: "會飛的哺乳動物！", img: "images/蝙蝠.jpg" },
+            { name: "鱷魚", rep: "卵生", temp: "外溫", hint: "外表兇猛的爬蟲類動物", img: "images/鱷魚.jpg" },
+            { name: "蝴蝶", rep: "卵生", temp: "外溫", hint: "經過完全變態的昆蟲", img: "images/蝴蝶.jpg" },
+            { name: "無尾熊", rep: "胎生", temp: "內溫", hint: "有育兒袋的可愛有袋類哺乳動物", img: "images/無尾熊.jpg" },
+            { name: "小丑魚", rep: "卵生", temp: "外溫", hint: "住在海葵裡的小魚", img: "images/小丑魚.jpg" },
+            { name: "蛇", rep: "卵生", temp: "外溫", hint: "沒有腳、會爬行的爬蟲類", img: "images/蛇.jpg" },
+            { name: "蜘蛛", rep: "卵生", temp: "外溫", hint: "有八隻腳的節肢動物", img: "images/蜘蛛.jpg" },
+            { name: "大象", rep: "胎生", temp: "內溫", hint: "陸地上體型巨大的哺乳動物", img: "images/大象.jpg" },
+            { name: "大肚魚", rep: "卵生", temp: "外溫", hint: "溪流或水溝常見的小魚", img: "images/大肚魚.jpg" },
+            { name: "孔雀魚", rep: "卵生", temp: "外溫", hint: "尾巴漂漂亮亮的小型觀賞魚", img: "images/孔雀魚.jpg" },
+            { name: "蟾蜍", rep: "卵生", temp: "外溫", hint: "皮膚表面有疙瘩的兩生類", img: "images/蟾蜍.jpg" },
+            { name: "臺灣獼猴", rep: "胎生", temp: "內溫", hint: "臺灣特有種靈長類哺乳動物", img: "images/臺灣獼猴.jpg" },
+            { name: "海豚", rep: "胎生", temp: "內溫", hint: "聰明的海洋哺乳類！", img: "images/海豚.jpg" }
+        ];
+
+        // 角色等級定義清單
+        const characterLevels = [
+            { name: "實習小博士", img: "images/實習小博士.png", battleImg: "images/實習小博士(戰).png", minXp: 0 },
+            { name: "自然小達人", img: "images/自然小達人.png", battleImg: "images/自然小達人(戰).png", minXp: 150 },
+            { name: "生物探險家", img: "images/生物探險家.png", battleImg: "images/生物探險家(戰).png", minXp: 400 },
+            { name: "動物王國守護者", img: "images/動物王國守護者.png", battleImg: "images/動物王國守護者(戰).png", minXp: 800 },
+            { name: "動物王國大師", img: "images/動物王國大師.png", battleImg: "images/動物王國大師(戰).png", minXp: 1200 }
+        ];
+
+        // 魔王關卡：3 位魔王（對應專屬背景圖檔 boss_bg1.png, boss_bg2.png, boss_bg3.png，傷害遞增）
+        const bossStagesData = [
+            {
+                stage: 1,
+                bossName: "冰霜巨獸",
+                bossImg: "images/杜倫.png",
+                bossBg: "images/boss_bg1.png",
+                wrongDamage: 25, // 答錯扣25點 (容錯4次)
+                questions: [
+                    { q: "蛇屬於外溫動物，在寒冷的季節，有些蛇會利用休眠的方式度過寒冬。", options: ["○ 正確", "✕ 錯誤"], answer: 0 },
+                    { q: "冬季時，如果偶爾出現溫暖的陽光，龜會躲在水裡避免晒傷。", options: ["○ 正確", "✕ 錯誤"], answer: 1 },
+                    { q: "當環境溫度過低時，有些蛙和蛇會減少活動，以休眠的狀態度過寒冬。", options: ["○ 正確", "✕ 錯誤"], answer: 0 },
+                    { q: "哺乳類動物的體溫會維持在一定的範圍之內，屬於內溫動物。", options: ["○ 正確", "✕ 錯誤"], answer: 0 }
+                ]
+            },
+            {
+                stage: 2,
+                bossName: "烈焰魔龍",
+                bossImg: "images/菲尼克斯.png",
+                bossBg: "images/boss_bg2.png",
+                wrongDamage: 34, // 答錯扣34點 (容錯3次)
+                questions: [
+                    { q: "內溫動物主要是從外界環境吸收熱來維持體溫，而外溫動物主要是利用身體內部所產生的熱量來維持體溫。", options: ["○ 正確", "✕ 錯誤"], answer: 1 },
+                    { q: "下列何者不是寒冷時人類用來幫助維持適當體溫的方式？", options: ["血管收縮", "食慾增加", "肌肉顫抖", "休眠"], answer: 3 },
+                    { q: "外溫動物主要是從外界環境吸收熱來維持體溫，體溫會隨環境改變。下列哪一種是外溫動物？", options: ["蓋斑鬥魚", "北極熊", "海豚", "麻雀"], answer: 0 },
+                    { q: "下列動物中，哪一種動物會利用休眠方式度過寒冬？", options: ["貓", "狗", "蟾蜍", "馬"], answer: 2 },
+                    { q: "天氣熱時，常常可看到狗吐出舌頭或喘氣的行為，它的目的是什麼？", options: ["增加體溫", "祈求食物", "降低體溫", "威嚇同伴"], answer: 2 }
+                ]
+            },
+            {
+                stage: 3,
+                bossName: "闇夜獸王",
+                bossImg: "images/闇夜獸王.png",
+                bossBg: "images/boss_bg3.png",
+                wrongDamage: 50, // 答錯扣50點 (答錯兩題就陣亡)
+                questions: [
+                    { q: "內溫動物體溫維持在一定範圍內，下列哪一種動物和人類一樣屬於內溫動物？", options: ["龜", "北極熊", "蛇", "蜥蜴"], answer: 1 },
+                    { q: "下列哪一個選項的動物都是外溫動物？", options: ["蜥蜴、蛙、鴨", "鯨、蝗蟲、龜", "龜、蜥蜴、蛇", "鱷魚、狗、蛇"], answer: 2 },
+                    { q: "下列動物中，哪一種動物的體溫比較不受環境溫度影響，維持在一定範圍內？", options: ["鳥", "蛇", "蛙", "魚"], answer: 0 },
+                    { q: "鯨魚住在水裡，請問牠是卵生還是胎生？", options: ["卵生", "胎生"], answer: 1 },
+                    { q: "企鵝住在南極冰天雪地，請問牠是內溫還是外溫動物？", options: ["內溫動物", "外溫動物"], answer: 0 },
+                    { q: "蝙蝠會飛，請問牠是鳥類還是哺乳類？", options: ["鳥類", "哺乳類"], answer: 1 }
+                ]
+            }
+        ];
+
+        let xp = 0;
+        let combo = 0;
+        let currentRound = 1;
+        const maxRounds = 15;
+        let remainingAnimals = [];
+        let currentAnimal = null;
+        let selectedRep = null;
+        let selectedTemp = null;
+
+        let selectedCharacter = {
+            name: "實習小博士",
+            img: "images/實習小博士.png",
+            battleImg: "images/實習小博士(戰).png"
+        };
+
+        let currentBossStageIndex = 0;
+        let currentBossQIndex = 0;
+        let playerHp = 100;
+        let bossHp = 100;
+        let bossGameStartedWithoutDamage = true;
+        let modalCallback = null;
+
+        let unlockedBadges = { 1: false, 2: false, 3: false, 4: false };
+
+        function updatePlayerTitleAndCharacter() {
+            document.getElementById('player-title').innerText = selectedCharacter.name;
+            document.getElementById('header-level-img').src = selectedCharacter.img;
+            const battlePlayerImg = document.getElementById('battle-player-img');
+            if (battlePlayerImg) {
+                battlePlayerImg.src = selectedCharacter.battleImg;
+            }
+            const battlePlayerTitle = document.getElementById('battle-player-title');
+            if (battlePlayerTitle) {
+                battlePlayerTitle.innerText = selectedCharacter.name;
+            }
+        }
+
+        function openCharModal() {
+            playSound('click');
+            const grid = document.getElementById('char-grid');
+            grid.innerHTML = '';
+
+            characterLevels.forEach(char => {
+                const isUnlocked = xp >= char.minXp;
+                const isSelected = selectedCharacter.name === char.name;
+
+                const card = document.createElement('div');
+                card.className = `char-option-card ${isUnlocked ? '' : 'locked'} ${isSelected ? 'selected' : ''}`;
+                
+                card.innerHTML = `
+                    <img src="${char.img}" alt="${char.name}" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\'><circle cx=\'25\' cy=\'25\' r=\'25\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'16\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
+                    <div class="char-option-name">${char.name}</div>
+                    <div style="font-size: 0.7rem; color: var(--text-secondary);">${isUnlocked ? '已解鎖' : `需要 ${char.minXp} XP`}</div>
+                `;
+
+                if (isUnlocked) {
+                    card.onclick = () => {
+                        playSound('click');
+                        selectedCharacter = { name: char.name, img: char.img, battleImg: char.battleImg };
+                        updatePlayerTitleAndCharacter();
+                        openCharModal();
+                    };
+                }
+
+                grid.appendChild(card);
+            });
+
+            document.getElementById('char-modal').classList.add('show');
+        }
+
+        function closeCharModal() {
+            playSound('click');
+            document.getElementById('char-modal').classList.remove('show');
+        }
+
+        function updateDoctorSpeech(text, expr = 'normal') {
+            document.getElementById('doctor-speech').innerHTML = `<b>貓頭鷹博士：</b>「${text}」`;
+            setDoctorExpression(expr);
+        }
+
+        function switchTab(tabId) {
+            playSound('click');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+
+            if (tabId === 'guide') {
+                event.currentTarget.classList.add('active');
+                document.getElementById('guide-panel').classList.add('active');
+                updateDoctorSpeech("歡迎來到知識補給站！複習完觀念就可以去挑戰冒險與魔王關卡囉！", 'normal');
+            } else if (tabId === 'challenge') {
+                event.currentTarget.classList.add('active');
+                document.getElementById('challenge-panel').classList.add('active');
+                initChallengeGame();
+            } else if (tabId === 'boss') {
+                event.currentTarget.classList.add('active');
+                document.getElementById('boss-panel').classList.add('active');
+                initBossGame();
+            } else if (tabId === 'badges') {
+                event.currentTarget.classList.add('active');
+                document.getElementById('badges-panel').classList.add('active');
+                checkBadgesUnlockConditions();
+                updateBadgesDisplay();
+                updateDoctorSpeech("檢視你的高難度成就！點擊上方頭像可以自由更換已解鎖的角色喔！", 'normal');
+            }
+        }
+
+        function initChallengeGame() {
+            currentRound = 1;
+            remainingAnimals = [...animalsData];
+            updateStatusUI();
+            loadNextAnimal();
+            updateDoctorSpeech("準備好挑戰冒險闖關了嗎？必須答對才會進入下一題，題庫不重複，全部答完一輪後才會重新開始喔！", 'normal');
+        }
+
+        function loadNextAnimal() {
+            if (currentRound > maxRounds) {
+                showModal("🎉 恭喜通關冒險闖關！", `太強了！你順利完成了 15 題冒險闖關！`, () => {
+                    initChallengeGame();
+                });
+                checkBadgesUnlockConditions();
+                playSound('win');
+                return;
+            }
+
+            if (remainingAnimals.length === 0) {
+                remainingAnimals = [...animalsData];
+            }
+
+            document.getElementById('current-round').innerText = currentRound;
+            selectedRep = null;
+            selectedTemp = null;
+
+            document.getElementById('rep-egg').classList.remove('selected-reproduction');
+            document.getElementById('rep-viv').classList.remove('selected-reproduction');
+            document.getElementById('temp-endo').classList.remove('selected-temperature');
+            document.getElementById('temp-ecto').classList.remove('selected-temperature');
+
+            const randomIndex = Math.floor(Math.random() * remainingAnimals.length);
+            currentAnimal = remainingAnimals[randomIndex];
+
+            document.getElementById('animal-name').innerText = currentAnimal.name;
+            document.getElementById('animal-hint').innerText = currentAnimal.hint;
+            document.getElementById('animal-img').src = currentAnimal.img;
+        }
+
+        function selectReproduction(val) {
+            playSound('click');
+            selectedRep = val;
+            document.getElementById('rep-egg').classList.remove('selected-reproduction');
+            document.getElementById('rep-viv').classList.remove('selected-reproduction');
+            if (val === '卵生') {
+                document.getElementById('rep-egg').classList.add('selected-reproduction');
+            } else {
+                document.getElementById('rep-viv').classList.add('selected-reproduction');
+            }
+        }
+
+        function selectTemperature(val) {
+            playSound('click');
+            selectedTemp = val;
+            document.getElementById('temp-endo').classList.remove('selected-temperature');
+            document.getElementById('temp-ecto').classList.remove('selected-temperature');
+            if (val === '內溫') {
+                document.getElementById('temp-endo').classList.add('selected-temperature');
+            } else {
+                document.getElementById('temp-ecto').classList.add('selected-temperature');
+            }
+        }
+
+        function checkAnswer() {
+            if (!selectedRep || !selectedTemp) {
+                alert("請完整選擇「生殖方式」與「體溫調節」喔！");
+                return;
+            }
+
+            const isCorrectRep = (selectedRep === currentAnimal.rep);
+            const isCorrectTemp = (selectedTemp === currentAnimal.temp);
+
+            if (isCorrectRep && isCorrectTemp) {
+                playSound('correct');
+                combo++;
+                xp += 15;
+                updateDoctorSpeech(`🎉 答對了！【${currentAnimal.name}】是${currentAnimal.rep}且為${currentAnimal.temp === '內溫' ? '內溫動物' : '外溫動物'}！連續 Combo：${combo}`, 'happy');
+
+                const idx = remainingAnimals.indexOf(currentAnimal);
+                if (idx > -1) {
+                    remainingAnimals.splice(idx, 1);
+                }
+
+                checkXPLevel();
+                updateStatusUI();
+                checkBadgesUnlockConditions();
+                currentRound++;
+                loadNextAnimal();
+            } else {
+                playSound('wrong');
+                combo = 0;
+                updateStatusUI();
+                updateDoctorSpeech(`❌ 答錯囉！【${currentAnimal.name}】不是這樣分類喔！請再試一次，答對才能進入下一題！`, 'sad');
+            }
+        }
+
+        function initBossGame() {
+            currentBossStageIndex = 0;
+            currentBossQIndex = 0;
+            playerHp = 100;
+            bossHp = 100;
+            bossGameStartedWithoutDamage = true;
+            updateBattleUI();
+            updateDoctorSpeech("👹 進入魔王挑戰！答對時你的角色會發動攻擊傷害魔王，答錯則會被魔王反擊！", 'normal');
+            loadBossQuestion();
+        }
+
+        function updateBattleUI() {
+            const currentStageObj = bossStagesData[currentBossStageIndex];
+            
+            const arenaBox = document.getElementById('boss-arena-box');
+            arenaBox.style.backgroundImage = `url('${currentStageObj.bossBg}')`;
+
+            document.getElementById('boss-stage-num').innerText = currentStageObj.stage;
+            document.getElementById('boss-name-label').innerText = currentStageObj.bossName;
+            document.getElementById('battle-boss-img').src = currentStageObj.bossImg;
+
+            document.getElementById('boss-q-num').innerText = currentBossQIndex + 1;
+            document.getElementById('boss-total-q').innerText = currentStageObj.questions.length;
+
+            updatePlayerTitleAndCharacter();
+
+            document.getElementById('player-hp-text').innerText = playerHp;
+            document.getElementById('player-hp-fill').style.width = playerHp + '%';
+            document.getElementById('boss-hp-fill').style.width = bossHp + '%';
+        }
+
+        function loadBossQuestion() {
+            const currentStageObj = bossStagesData[currentBossStageIndex];
+            const qObj = currentStageObj.questions[currentBossQIndex];
+
+            updateBattleUI();
+            document.getElementById('boss-question-text').innerText = qObj.q;
+
+            const listEl = document.getElementById('boss-options-list');
+            listEl.innerHTML = '';
+
+            qObj.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'choice-btn';
+                btn.style.background = 'white';
+                btn.innerText = optText;
+                btn.onclick = () => checkBossAnswer(idx, qObj.answer);
+                listEl.appendChild(btn);
+            });
+        }
+
+        function checkBossAnswer(selectedIdx, correctIdx) {
+            const currentStageObj = bossStagesData[currentBossStageIndex];
+            const playerFighter = document.getElementById('player-fighter');
+            const bossFighter = document.getElementById('boss-fighter');
+
+            if (selectedIdx === correctIdx) {
+                playSound('correct');
+                playSound('hit');
+                combo++;
+                xp += 25;
+                checkXPLevel();
+                updateStatusUI();
+
+                playerFighter.classList.add('animate-player-attack');
+                bossFighter.classList.add('animate-boss-shake');
+                setTimeout(() => {
+                    playerFighter.classList.remove('animate-player-attack');
+                    bossFighter.classList.remove('animate-boss-shake');
+                }, 400);
+
+                const damagePerQ = Math.round(100 / currentStageObj.questions.length);
+                bossHp -= damagePerQ;
+                if (bossHp < 0) bossHp = 0;
+                updateBattleUI();
+
+                updateDoctorSpeech(`⚔️ 攻擊成功！你對【${currentStageObj.bossName}】造成了強烈傷害！`, 'happy');
+                currentBossQIndex++;
+
+                if (currentBossQIndex >= currentStageObj.questions.length) {
+                    currentBossStageIndex++;
+                    currentBossQIndex = 0;
+                    bossHp = 100;
+
+                    if (currentBossStageIndex >= bossStagesData.length) {
+                        showModal("👑 恭喜完全征服三位魔王！", "太神啦！你連續擊敗 3 位強大魔王，贏得無上榮譽與大師頭銜！", () => {
+                            initBossGame();
+                        });
+                        checkBadgesUnlockConditions();
+                        playSound('win');
+                        return;
+                    } else {
+                        playerHp = 100;
+                        updateBattleUI();
+                        updateDoctorSpeech(`🎉 幹得好！上一位魔王已被擊敗，更強大的新魔王【${bossStagesData[currentBossStageIndex].bossName}】登場！生命值已恢復至 100！`, 'happy');
+                    }
+                }
+
+                setTimeout(loadBossQuestion, 900);
+            } else {
+                playSound('wrong');
+                combo = 0;
+                updateStatusUI();
+                bossGameStartedWithoutDamage = false;
+                
+                bossFighter.classList.add('animate-player-attack');
+                playerFighter.classList.add('animate-player-hit');
+                setTimeout(() => {
+                    bossFighter.classList.remove('animate-player-attack');
+                    playerFighter.classList.remove('animate-player-hit');
+                }, 400);
+
+                playerHp -= currentStageObj.wrongDamage;
+                if (playerHp < 0) playerHp = 0;
+                updateBattleUI();
+
+                if (playerHp <= 0) {
+                    showModal("💥 挑戰失敗！", "你的血量歸零了！被魔王擊敗，請點擊確定按鈕重新挑戰！", () => {
+                        initBossGame();
+                    });
+                    setDoctorExpression('sad');
+                } else {
+                    updateDoctorSpeech(`❌ 答錯了！魔王展開猛烈反擊（扣 ${currentStageObj.wrongDamage} 點血量）！剩餘血量：${playerHp}。加油穩住！`, 'sad');
+                    setTimeout(loadBossQuestion, 1200);
+                }
+            }
+        }
+
+        function checkXPLevel() {
+            updatePlayerTitleAndCharacter();
+        }
+
+        function updateStatusUI() {
+            document.getElementById('xp-val').innerText = xp;
+            document.getElementById('combo-val').innerText = combo;
+        }
+
+        function checkBadgesUnlockConditions() {
+            if (combo >= 20) unlockedBadges[1] = true; // 20連擊大師
+            if (currentBossStageIndex >= bossStagesData.length && bossGameStartedWithoutDamage) unlockedBadges[2] = true; // 無傷無敵戰戰神
+            if (xp >= 1500) unlockedBadges[3] = true; // 傳奇生物大師
+            if (unlockedBadges[1] && unlockedBadges[2] && unlockedBadges[3]) {
+                unlockedBadges[4] = true; // 全知全能生物學家
+            }
+        }
+
+        function updateBadgesDisplay() {
+            for (let i = 1; i <= 4; i++) {
+                const card = document.getElementById(`badge-${i}`);
+                if (unlockedBadges[i]) {
+                    card.classList.add('unlocked');
+                } else {
+                    card.classList.remove('unlocked');
+                }
+            }
+        }
+
+        function showModal(title, text, callback = null) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-text').innerText = text;
+            modalCallback = callback;
+            document.getElementById('result-modal').classList.add('show');
+        }
+
+        function closeModal() {
+            playSound('click');
+            document.getElementById('result-modal').classList.remove('show');
+            if (modalCallback) {
+                modalCallback();
+                modalCallback = null;
+            }
+        }
+    </script>
+</body>
+</html>
