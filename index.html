@@ -389,6 +389,32 @@
             color: var(--text-secondary);
         }
 
+        /* 答題即時醒目提示橫幅 */
+        .feedback-banner {
+            padding: 14px 20px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 900;
+            font-size: calc(var(--fs-body) * 1.15);
+            margin-bottom: 18px;
+            display: none;
+            animation: bannerPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        @keyframes bannerPop {
+            0% { transform: scale(0.95); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .feedback-success {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 2px solid #22c55e;
+            color: #15803d;
+        }
+        .feedback-error {
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            border: 2px solid #ef4444;
+            color: #b91c1c;
+        }
+
         .animal-card-display {
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border: 2px solid #e2e8f0;
@@ -508,11 +534,11 @@
             transform: translateY(-2px);
         }
 
-        /* 3. 魔王挑戰打怪畫面樣式 */
+        /* 3. 魔王挑戰打怪畫面樣式（支援手機完美自適應與換行） */
         .boss-battle-arena {
             border: 3px solid #fda4af;
             border-radius: var(--border-radius);
-            padding: 28px 22px 22px 22px;
+            padding: 28px 16px 20px 16px;
             margin-bottom: 22px;
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
             background-size: cover;
@@ -538,38 +564,41 @@
 
         .battle-visual-container {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
             margin-bottom: 18px;
             position: relative;
             padding-top: 10px;
+            flex-wrap: wrap; /* 手機版自動換行防溢出 */
+            gap: 12px;
         }
 
         .fighter-card {
             text-align: center;
-            width: 170px;
+            width: 140px;
+            flex-shrink: 0;
         }
 
         .fighter-avatar {
-            width: 150px;
-            height: 150px;
+            width: 120px;
+            height: 120px;
             border-radius: 0;
             border: none;
             object-fit: contain;
             background: transparent;
             box-shadow: none;
-            margin: 0 auto 6px auto;
+            margin: 0 auto 4px auto;
         }
 
         .fighter-name {
             font-weight: 900;
-            font-size: calc(var(--fs-body) * 1.15);
+            font-size: calc(var(--fs-body) * 1.05);
             color: var(--text-main);
             text-shadow: 0 1px 2px rgba(255,255,255,0.8);
         }
 
         .vs-badge {
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 900;
             color: #e11d48;
             text-shadow: 0 2px 4px rgba(255,255,255,0.9);
@@ -577,7 +606,7 @@
 
         @keyframes playerAttackMove {
             0% { transform: translateX(0); }
-            50% { transform: translateX(50px) scale(1.1); }
+            50% { transform: translateX(40px) scale(1.1); }
             100% { transform: translateX(0); }
         }
         .animate-player-attack {
@@ -586,8 +615,8 @@
 
         @keyframes bossShake {
             0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-12px); }
-            40%, 80% { transform: translateX(12px); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
         }
         .animate-boss-shake {
             animation: bossShake 0.4s ease;
@@ -595,21 +624,21 @@
 
         @keyframes playerHit {
             0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(-20px); filter: brightness(1.5) sepia(1); }
+            50% { transform: translateX(-15px); filter: brightness(1.5) sepia(1); }
         }
         .animate-player-hit {
             animation: playerHit 0.4s ease;
         }
 
         .hp-bar-wrapper {
-            margin-top: 6px;
+            margin-top: 4px;
         }
 
         .hp-bar-container {
             width: 100%;
             background: rgba(226, 232, 240, 0.9);
-            height: 14px;
-            border-radius: 7px;
+            height: 12px;
+            border-radius: 6px;
             overflow: hidden;
             border: 2px solid #94a3b8;
         }
@@ -644,11 +673,11 @@
             gap: 14px;
         }
 
-        /* 成就區樣式 */
+        /* 4. 成就區樣式（手機版自動換行自適應） */
         .badges-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
             margin-top: 12px;
         }
 
@@ -656,7 +685,7 @@
             background: #f8fafc;
             border: 2px dashed #cbd5e1;
             border-radius: 18px;
-            padding: 22px 14px;
+            padding: 20px 12px;
             text-align: center;
             opacity: 0.45;
             transition: var(--transition);
@@ -671,8 +700,8 @@
         }
 
         .badge-icon {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
+            font-size: 2.6rem;
+            margin-bottom: 8px;
         }
 
         .badge-title {
@@ -683,9 +712,9 @@
         }
 
         .badge-desc {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         /* 彈窗樣式 */
@@ -831,8 +860,8 @@
             .status-bar { flex-direction: column; align-items: stretch; gap: 10px; }
             .stats { justify-content: space-between; }
             .char-grid { grid-template-columns: repeat(2, 1fr); }
-            .fighter-card { width: 130px; }
-            .fighter-avatar { width: 130px; height: 130px; }
+            .fighter-card { width: 120px; }
+            .fighter-avatar { width: 100px; height: 100px; }
             .guide-grid, .special-grid { grid-template-columns: 1fr; }
             footer { flex-direction: column; text-align: center; justify-content: center; }
         }
@@ -840,7 +869,7 @@
 </head>
 <body>
 
-    <!-- 自訂背景音樂音檔 (fighting.mp3)，預設開啟 -->
+    <!-- 自訂背景音樂音檔 (fighting.mp3) -->
     <audio id="bgm-audio" src="fighting.mp3" preload="auto" loop></audio>
 
     <header>
@@ -944,6 +973,9 @@
             <div class="game-header">
                 <div>分類關卡進度：第 <span id="current-round">1</span> / 15 題</div>
             </div>
+
+            <!-- 即時醒目提示橫幅 (解決手機看不見博士對話框的問題) -->
+            <div id="challenge-feedback" class="feedback-banner"></div>
 
             <div class="animal-card-display">
                 <div class="animal-img-container">
@@ -1188,6 +1220,9 @@
             }
         }
 
+        // ==========================================
+        // 🎵 一進畫面自動播放 BGM 智慧解鎖機制
+        // ==========================================
         window.addEventListener('DOMContentLoaded', () => {
             preloadAllImages();
 
@@ -1195,15 +1230,17 @@
                 bgmEnabled = true;
                 document.getElementById('bgm-toggle').innerText = "🎵 BGM:開";
             }).catch(e => {
-                const unlockBGM = () => {
+                const unlockAndPlayBGM = () => {
                     if (bgmEnabled) {
                         bgmAudio.play().catch(() => {});
                     }
-                    window.removeEventListener('click', unlockBGM);
-                    window.removeEventListener('keydown', unlockBGM);
+                    window.removeEventListener('click', unlockAndPlayBGM);
+                    window.removeEventListener('keydown', unlockAndPlayBGM);
+                    window.removeEventListener('touchstart', unlockAndPlayBGM);
                 };
-                window.addEventListener('click', unlockBGM);
-                window.addEventListener('keydown', unlockBGM);
+                window.addEventListener('click', unlockAndPlayBGM);
+                window.addEventListener('keydown', unlockAndPlayBGM);
+                window.addEventListener('touchstart', unlockAndPlayBGM);
             });
         });
 
@@ -1442,6 +1479,10 @@
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
 
+            // 切換分頁時隱藏冒險闖關的即時反饋橫幅
+            const feedbackEl = document.getElementById('challenge-feedback');
+            if (feedbackEl) feedbackEl.style.display = 'none';
+
             if (tabId === 'guide') {
                 event.currentTarget.classList.add('active');
                 document.getElementById('guide-panel').classList.add('active');
@@ -1469,6 +1510,10 @@
             updateStatusUI();
             loadNextAnimal();
             updateDoctorSpeech("準備好挑戰冒險闖關了嗎？必須答對才會進入下一題，題庫不重複，全部答完一輪後才會重新開始喔！", 'normal');
+            
+            // 隱藏反饋橫幅
+            const feedbackEl = document.getElementById('challenge-feedback');
+            if (feedbackEl) feedbackEl.style.display = 'none';
         }
 
         function loadNextAnimal() {
@@ -1526,6 +1571,15 @@
             }
         }
 
+        // 冒險闖關專屬的即時清楚反饋提示函數
+        function showChallengeFeedback(isSuccess, message) {
+            const feedbackEl = document.getElementById('challenge-feedback');
+            if (!feedbackEl) return;
+            feedbackEl.style.display = 'block';
+            feedbackEl.className = `feedback-banner ${isSuccess ? 'feedback-success' : 'feedback-error'}`;
+            feedbackEl.innerText = message;
+        }
+
         function checkAnswer() {
             if (!selectedRep || !selectedTemp) {
                 alert("請完整選擇「生殖方式」與「體溫調節」喔！");
@@ -1539,6 +1593,9 @@
                 playSound('correct');
                 combo++;
                 xp += 15;
+                
+                // 畫面上顯示非常清楚的答對提示
+                showChallengeFeedback(true, `🎉 太棒了！答對啦！【${currentAnimal.name}】是 ${currentAnimal.rep} ｜ ${currentAnimal.temp}動物 (連續 Combo: ${combo})`);
                 updateDoctorSpeech(`🎉 答對了！【${currentAnimal.name}】是${currentAnimal.rep}且為${currentAnimal.temp === '內溫' ? '內溫動物' : '外溫動物'}！連續 Combo：${combo}`, 'happy');
 
                 const idx = remainingAnimals.indexOf(currentAnimal);
@@ -1555,7 +1612,10 @@
                 playSound('wrong');
                 combo = 0;
                 updateStatusUI();
-                updateDoctorSpeech(`❌ 答錯囉！【${currentAnimal.name}】不是這樣分類喔！請再試一次，答對才能進入下一題！`, 'sad');
+                
+                // 畫面上顯示非常清楚的答錯提示與正確解答
+                showChallengeFeedback(false, `❌ 答錯囉！【${currentAnimal.name}】正確答案是：${currentAnimal.rep} ｜ ${currentAnimal.temp}動物。請再試一次！`);
+                updateDoctorSpeech(`❌ 答錯囉！【${currentAnimal.name}】正確答案是：${currentAnimal.rep} ｜ ${currentAnimal.temp === '內溫' ? '內溫動物' : '外溫動物'}。請再試一次！`, 'sad');
             }
         }
 
@@ -1643,22 +1703,15 @@
                     currentBossQIndex = 0;
                     bossHp = 100;
 
-                    // 檢查是否為最後一關 (Stage 3 結束)
                     if (currentBossStageIndex >= bossStagesData.length) {
-                        showModal(
-                            "👑 恭喜完全征服三位魔王！", 
-                            "太神啦！你連續擊敗 3 位強大魔王，贏得無上榮譽與大師頭銜！點擊下方按鈕即可重新挑戰！", 
-                            () => {
-                                initBossGame(); // 點擊後重新開始魔王挑戰
-                            }
-                        );
-                        // 將結算彈窗按鈕文字改回「重新挑戰」
                         document.getElementById('modal-action-btn').innerText = "重新挑戰";
+                        showModal("👑 恭喜完全征服三位魔王！", "太神啦！你連續擊敗 3 位強大魔王，贏得無上榮譽與大師頭銜！點擊下方按鈕即可重新挑戰！", () => {
+                            initBossGame();
+                        });
                         checkBadgesUnlockConditions();
                         playSound('win');
                         return;
                     } else {
-                        // 還沒打完前兩關，顯示「進入下一關」
                         document.getElementById('modal-action-btn').innerText = "進入下一關";
                         showModal(
                             `🎉 成功擊敗【${currentStageObj.bossName}】！`, 
