@@ -857,10 +857,9 @@
     <div class="status-bar">
         <div class="player-info">
             <div class="avatar" title="點擊更換角色" onclick="openCharModal()">
-                <img id="header-level-img" src="images/實習小博士.png" alt="玩家頭銜" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\'><circle cx=\'32\' cy=\'32\' r=\'32\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'20\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
+                <img id="header-level-img" src="images/實習小博士.webp" alt="玩家頭銜" loading="eager" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'64\' height=\'64\'><circle cx=\'32\' cy=\'32\' r=\'32\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'20\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
             </div>
             <div>
-                <!-- 明顯放大的角色頭銜字體 -->
                 <div style="font-weight: 900; font-size: 1.35rem;" id="player-title">實習小博士</div>
             </div>
         </div>
@@ -881,10 +880,10 @@
     <!-- 內容容器 -->
     <div class="container">
 
-        <!-- 貓頭鷹博士直接站在左邊（透明無白邊對話框） -->
+        <!-- 貓頭鷹博士 -->
         <div class="doctor-box" id="doctor-container">
             <div class="doctor-avatar">
-                <img id="doctor-img" src="images/貓頭鷹博士.png" alt="貓頭鷹博士" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\'><text x=\'50%\' y=\'50%\' font-size=\'50\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦉</text></svg>'">
+                <img id="doctor-img" src="images/貓頭鷹博士.webp" alt="貓頭鷹博士" loading="eager" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'90\' height=\'90\'><text x=\'50%\' y=\'50%\' font-size=\'50\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦉</text></svg>'">
             </div>
             <div class="doctor-speech" id="doctor-speech">
                 <b>貓頭鷹博士：</b>「歡迎來到知識補給站！複習完觀念就可以去挑戰冒險與魔王關卡囉！」
@@ -895,25 +894,21 @@
         <div id="guide-panel" class="panel active">
             <h2 style="margin-bottom: 18px; color: var(--primary); font-weight: 900;">核心觀念</h2>
             <div class="guide-grid">
-                <!-- 卵生動物 -->
                 <div class="guide-card">
                     <h3>卵生動物</h3>
                     <p>媽媽先產卵，寶寶會在蛋裡吸收卵黃養分，長大後破殼而出。</p>
                     <div class="example-box">哺乳類動物、少數魚類</div>
                 </div>
-                <!-- 胎生動物 -->
                 <div class="guide-card">
                     <h3>胎生動物</h3>
                     <p>寶寶在媽媽肚子裡長大才出生，會喝母乳。</p>
                     <div class="example-box">多數魚類、單孔目哺乳類、鳥類、爬蟲類、兩生類、昆蟲與無脊椎動物</div>
                 </div>
-                <!-- 內溫動物 -->
                 <div class="guide-card">
                     <h3>內溫動物</h3>
                     <p>不管天氣多冷多熱，身體內部會產生熱能來維持體溫。</p>
                     <div class="example-box">哺乳類、鳥類</div>
                 </div>
-                <!-- 外溫動物 -->
                 <div class="guide-card">
                     <h3>外溫動物</h3>
                     <p>從外界環境獲得熱能，天氣冷牠們會想冬眠;天氣熱才會活躍。</p>
@@ -921,24 +916,23 @@
                 </div>
             </div>
 
-            <!-- 小博士偷偷告訴你 -->
             <div class="special-section">
                 <h3>💡 小博士偷偷告訴你（特別區）</h3>
                 <div class="special-grid">
                     <div class="special-card">
-                        <img src="images/特例1.png" alt="鯨魚與海豚" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐳</text></svg>'">
+                        <img src="images/特例1.webp" alt="鯨魚與海豚" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐳</text></svg>'">
                         <div class="special-card-text"><b>鯨魚與海豚</b>是住在水裡的哺乳類 (胎生＋內溫)。</div>
                     </div>
                     <div class="special-card">
-                        <img src="images/特例2.png" alt="企鵝" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐧</text></svg>'">
+                        <img src="images/特例2.webp" alt="企鵝" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐧</text></svg>'">
                         <div class="special-card-text"><b>企鵝</b>是不會飛的鳥 (卵生＋內溫)。</div>
                     </div>
                     <div class="special-card">
-                        <img src="images/特例3.png" alt="蝙蝠" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦇</text></svg>'">
+                        <img src="images/特例3.webp" alt="蝙蝠" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🦇</text></svg>'">
                         <div class="special-card-text"><b>蝙蝠</b>是會飛的哺乳類 (胎生＋內溫)。</div>
                     </div>
                     <div class="special-card">
-                        <img src="images/特例4.png" alt="蜘蛛" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🕷️</text></svg>'">
+                        <img src="images/特例4.webp" alt="蜘蛛" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'60\' height=\'60\'><rect width=\'100%\' height=\'100%\' fill=\'%23fef3c7\'/><text x=\'50%\' y=\'50%\' font-size=\'24\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🕷️</text></svg>'">
                         <div class="special-card-text"><b>蜘蛛</b>是無脊椎的節肢動物 (屬於卵生＋外溫)。</div>
                     </div>
                 </div>
@@ -953,7 +947,7 @@
 
             <div class="animal-card-display">
                 <div class="animal-img-container">
-                    <img id="animal-img" src="" alt="動物圖片" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'450\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' font-size=\'32\' fill=\'%2364748b\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐾 請確認 images/動物名稱.jpg</text></svg>'">
+                    <img id="animal-img" src="" alt="動物圖片" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'800\' height=\'450\'><rect width=\'100%\' height=\'100%\' fill=\'%23f1f5f9\'/><text x=\'50%\' y=\'50%\' font-size=\'32\' fill=\'%2364748b\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🐾 請確認 images/動物名稱.webp</text></svg>'">
                 </div>
                 <div class="animal-name" id="animal-name">載入中...</div>
                 <div class="animal-hint" id="animal-hint">請為牠做出正確的生殖與體溫分類！</div>
@@ -986,7 +980,7 @@
                 <div class="battle-visual-container">
                     <!-- 玩家打怪角色 -->
                     <div class="fighter-card" id="player-fighter">
-                        <img class="fighter-avatar" id="battle-player-img" src="images/實習小博士(戰).png" alt="玩家角色" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
+                        <img class="fighter-avatar" id="battle-player-img" src="images/實習小博士(戰).webp" alt="玩家角色" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%236366f1\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>🎓</text></svg>'">
                         <div class="fighter-name" id="battle-player-title">實習小博士</div>
                         <div class="hp-bar-wrapper">
                             <div style="font-size: 0.8rem; color: #065f46; font-weight:900;">HP: <span id="player-hp-text">100</span></div>
@@ -1000,7 +994,7 @@
 
                     <!-- 魔王角色 (靜止登場) -->
                     <div class="fighter-card" id="boss-fighter">
-                        <img class="fighter-avatar" id="battle-boss-img" src="images/杜倫.png" alt="魔王" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%23f43f5e\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>👹</text></svg>'">
+                        <img class="fighter-avatar" id="battle-boss-img" src="images/杜倫.webp" alt="魔王" loading="lazy" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'150\' height=\'150\'><circle cx=\'75\' cy=\'75\' r=\'70\' fill=\'%23f43f5e\'/><text x=\'50%\' y=\'50%\' font-size=\'36\' fill=\'white\' dominant-baseline=\'middle\' text-anchor=\'middle\'>👹</text></svg>'">
                         <div class="fighter-name" id="boss-name-label">冰霜巨獸</div>
                         <div class="hp-bar-wrapper">
                             <div style="font-size: 0.8rem; color: #9f1239; font-weight:900;">魔王血量</div>
@@ -1061,7 +1055,7 @@
         </div>
     </footer>
 
-    <!-- 角色選擇彈窗 (Character Selection Modal) -->
+    <!-- 角色選擇彈窗 -->
     <div class="modal" id="char-modal">
         <div class="modal-content">
             <div class="modal-title">🎭 選擇你的角色</div>
@@ -1076,7 +1070,7 @@
         <div class="modal-content">
             <div class="modal-title" id="modal-title">闖關成功！</div>
             <div class="modal-text" id="modal-text">太棒了！你獲得了積分與 XP！</div>
-            <button class="action-btn" onclick="closeModal()" style="width: 100%;">確定</button>
+            <button class="action-btn" id="modal-action-btn" onclick="closeModal()" style="width: 100%;">進入下一關</button>
         </div>
     </div>
 
@@ -1120,14 +1114,53 @@
             document.getElementById('online-users-val').innerText = onlineCount;
         });
 
-        // 音效與背景音樂（BGM）控制系統
+        // ==========================================
+        // 🚀 圖片預載入加速系統 (.webp)
+        // ==========================================
+        function preloadAllImages() {
+            const imagePaths = [
+                "images/貓頭鷹博士.webp",
+                "images/貓頭鷹博士(開心).webp",
+                "images/貓頭鷹博士(哭).webp",
+                "images/杜倫.webp",
+                "images/菲尼克斯.webp",
+                "images/闇夜獸王.webp",
+                "images/boss_bg1.webp",
+                "images/boss_bg2.webp",
+                "images/boss_bg3.webp",
+                "images/實習小博士.webp",
+                "images/實習小博士(戰).webp",
+                "images/自然小達人.webp",
+                "images/自然小達人(戰).webp",
+                "images/生物探險家.webp",
+                "images/生物探險家(戰).webp",
+                "images/動物王國守護者.webp",
+                "images/動物王國守護者(戰).webp",
+                "images/動物王國大師.webp",
+                "images/動物王國大師(戰).webp",
+                "images/特例1.webp",
+                "images/特例2.webp",
+                "images/特例3.webp",
+                "images/特例4.webp"
+            ];
+
+            const animalNames = ["小狗", "雞", "青蛙", "烏龜", "鯨魚", "企鵝", "蝙蝠", "鱷魚", "蝴蝶", "無尾熊", "小丑魚", "蛇", "蜘蛛", "大象", "大肚魚", "孔雀魚", "蟾蜍", "臺灣獼猴", "海豚"];
+            animalNames.forEach(name => {
+                imagePaths.push(`images/${name}.webp`);
+            });
+
+            imagePaths.forEach(path => {
+                const img = new Image();
+                img.src = path;
+            });
+        }
+
         let soundEnabled = true;
-        let bgmEnabled = true; // 預設開啟 BGM
+        let bgmEnabled = true;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const bgmAudio = document.getElementById('bgm-audio');
 
-        // 字體大小獨立縮放控制 (循環順序：放大字 -> 特大字 -> 標準字)
-        let fontScaleIndex = 0; // 0: 標準, 1: 放大, 2: 特大
+        let fontScaleIndex = 0;
         const bodyTag = document.body;
         const fontNames = ['🔠 放大字', '🔠 特大字', '🔠 標準字'];
 
@@ -1147,16 +1180,17 @@
             const docImg = document.getElementById('doctor-img');
             if (!docImg) return;
             if (expr === 'happy') {
-                docImg.src = "images/貓頭鷹博士(開心).png";
+                docImg.src = "images/貓頭鷹博士(開心).webp";
             } else if (expr === 'sad') {
-                docImg.src = "images/貓頭鷹博士(哭).png";
+                docImg.src = "images/貓頭鷹博士(哭).webp";
             } else {
-                docImg.src = "images/貓頭鷹博士.png";
+                docImg.src = "images/貓頭鷹博士.webp";
             }
         }
 
-        // 頁面載入後自動嘗試播放 BGM
         window.addEventListener('DOMContentLoaded', () => {
+            preloadAllImages();
+
             bgmAudio.play().then(() => {
                 bgmEnabled = true;
                 document.getElementById('bgm-toggle').innerText = "🎵 BGM:開";
@@ -1225,7 +1259,6 @@
                 osc.start();
                 osc.stop(audioCtx.currentTime + 0.25);
             } else if (type === 'hit') {
-                // 打擊特效音效 (清脆震撼的打擊感)
                 osc.type = 'square';
                 osc.frequency.setValueAtTime(150, audioCtx.currentTime);
                 osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.15);
@@ -1249,46 +1282,43 @@
             }
         }
 
-        // 19 種指定動物題庫
         const animalsData = [
-            { name: "小狗", rep: "胎生", temp: "內溫", hint: "人類最忠實的哺乳類好朋友", img: "images/小狗.jpg" },
-            { name: "雞", rep: "卵生", temp: "內溫", hint: "會生蛋的鳥類代表", img: "images/雞.jpg" },
-            { name: "青蛙", rep: "卵生", temp: "外溫", hint: "幼體是蝌蚪，喜歡潮濕環境", img: "images/青蛙.jpg" },
-            { name: "烏龜", rep: "卵生", temp: "外溫", hint: "背著硬殼，冬天常晒太陽或休眠", img: "images/烏龜.jpg" },
-            { name: "鯨魚", rep: "胎生", temp: "內溫", hint: "住在海裡，但它是哺乳類！", img: "images/鯨魚.jpg" },
-            { name: "企鵝", rep: "卵生", temp: "內溫", hint: "住在冰天雪地不會飛的鳥類！", img: "images/企鵝.jpg" },
-            { name: "蝙蝠", rep: "胎生", temp: "內溫", hint: "會飛的哺乳動物！", img: "images/蝙蝠.jpg" },
-            { name: "鱷魚", rep: "卵生", temp: "外溫", hint: "外表兇猛的爬蟲類動物", img: "images/鱷魚.jpg" },
-            { name: "蝴蝶", rep: "卵生", temp: "外溫", hint: "經過完全變態的昆蟲", img: "images/蝴蝶.jpg" },
-            { name: "無尾熊", rep: "胎生", temp: "內溫", hint: "有育兒袋的可愛有袋類哺乳動物", img: "images/無尾熊.jpg" },
-            { name: "小丑魚", rep: "卵生", temp: "外溫", hint: "住在海葵裡的小魚", img: "images/小丑魚.jpg" },
-            { name: "蛇", rep: "卵生", temp: "外溫", hint: "沒有腳、會爬行的爬蟲類", img: "images/蛇.jpg" },
-            { name: "蜘蛛", rep: "卵生", temp: "外溫", hint: "有八隻腳的節肢動物", img: "images/蜘蛛.jpg" },
-            { name: "大象", rep: "胎生", temp: "內溫", hint: "陸地上體型巨大的哺乳動物", img: "images/大象.jpg" },
-            { name: "大肚魚", rep: "卵生", temp: "外溫", hint: "溪流或水溝常見的小魚", img: "images/大肚魚.jpg" },
-            { name: "孔雀魚", rep: "卵生", temp: "外溫", hint: "尾巴漂漂亮亮的小型觀賞魚", img: "images/孔雀魚.jpg" },
-            { name: "蟾蜍", rep: "卵生", temp: "外溫", hint: "皮膚表面有疙瘩的兩生類", img: "images/蟾蜍.jpg" },
-            { name: "臺灣獼猴", rep: "胎生", temp: "內溫", hint: "臺灣特有種靈長類哺乳動物", img: "images/臺灣獼猴.jpg" },
-            { name: "海豚", rep: "胎生", temp: "內溫", hint: "聰明的海洋哺乳類！", img: "images/海豚.jpg" }
+            { name: "小狗", rep: "胎生", temp: "內溫", hint: "人類最忠實的哺乳類好朋友", img: "images/小狗.webp" },
+            { name: "雞", rep: "卵生", temp: "內溫", hint: "會生蛋的鳥類代表", img: "images/雞.webp" },
+            { name: "青蛙", rep: "卵生", temp: "外溫", hint: "幼體是蝌蚪，喜歡潮濕環境", img: "images/青蛙.webp" },
+            { name: "烏龜", rep: "卵生", temp: "外溫", hint: "背著硬殼，冬天常晒太陽或休眠", img: "images/烏龜.webp" },
+            { name: "鯨魚", rep: "胎生", temp: "內溫", hint: "住在海裡，但它是哺乳類！", img: "images/鯨魚.webp" },
+            { name: "企鵝", rep: "卵生", temp: "內溫", hint: "住在冰天雪地不會飛的鳥類！", img: "images/企鵝.webp" },
+            { name: "蝙蝠", rep: "胎生", temp: "內溫", hint: "會飛的哺乳動物！", img: "images/蝙蝠.webp" },
+            { name: "鱷魚", rep: "卵生", temp: "外溫", hint: "外表兇猛的爬蟲類動物", img: "images/鱷魚.webp" },
+            { name: "蝴蝶", rep: "卵生", temp: "外溫", hint: "經過完全變態的昆蟲", img: "images/蝴蝶.webp" },
+            { name: "無尾熊", rep: "胎生", temp: "內溫", hint: "有育兒袋的可愛有袋類哺乳動物", img: "images/無尾熊.webp" },
+            { name: "小丑魚", rep: "卵生", temp: "外溫", hint: "住在海葵裡的小魚", img: "images/小丑魚.webp" },
+            { name: "蛇", rep: "卵生", temp: "外溫", hint: "沒有腳、會爬行的爬蟲類", img: "images/蛇.webp" },
+            { name: "蜘蛛", rep: "卵生", temp: "外溫", hint: "有八隻腳的節肢動物", img: "images/蜘蛛.webp" },
+            { name: "大象", rep: "胎生", temp: "內溫", hint: "陸地上體型巨大的哺乳動物", img: "images/大象.webp" },
+            { name: "大肚魚", rep: "卵生", temp: "外溫", hint: "溪流或水溝常見的小魚", img: "images/大肚魚.webp" },
+            { name: "孔雀魚", rep: "卵生", temp: "外溫", hint: "尾巴漂漂亮亮的小型觀賞魚", img: "images/孔雀魚.webp" },
+            { name: "蟾蜍", rep: "卵生", temp: "外溫", hint: "皮膚表面有疙瘩的兩生類", img: "images/蟾蜍.webp" },
+            { name: "臺灣獼猴", rep: "胎生", temp: "內溫", hint: "臺灣特有種靈長類哺乳動物", img: "images/臺灣獼猴.webp" },
+            { name: "海豚", rep: "胎生", temp: "內溫", hint: "聰明的海洋哺乳類！", img: "images/海豚.webp" }
         ];
 
-        // 角色等級定義清單
         const characterLevels = [
-            { name: "實習小博士", img: "images/實習小博士.png", battleImg: "images/實習小博士(戰).png", minXp: 0 },
-            { name: "自然小達人", img: "images/自然小達人.png", battleImg: "images/自然小達人(戰).png", minXp: 150 },
-            { name: "生物探險家", img: "images/生物探險家.png", battleImg: "images/生物探險家(戰).png", minXp: 400 },
-            { name: "動物王國守護者", img: "images/動物王國守護者.png", battleImg: "images/動物王國守護者(戰).png", minXp: 800 },
-            { name: "動物王國大師", img: "images/動物王國大師.png", battleImg: "images/動物王國大師(戰).png", minXp: 1200 }
+            { name: "實習小博士", img: "images/實習小博士.webp", battleImg: "images/實習小博士(戰).webp", minXp: 0 },
+            { name: "自然小達人", img: "images/自然小達人.webp", battleImg: "images/自然小達人(戰).webp", minXp: 150 },
+            { name: "生物探險家", img: "images/生物探險家.webp", battleImg: "images/生物探險家(戰).webp", minXp: 400 },
+            { name: "動物王國守護者", img: "images/動物王國守護者.webp", battleImg: "images/動物王國守護者(戰).webp", minXp: 800 },
+            { name: "動物王國大師", img: "images/動物王國大師.webp", battleImg: "images/動物王國大師(戰).webp", minXp: 1200 }
         ];
 
-        // 魔王關卡：3 位魔王（對應專屬背景圖檔 boss_bg1.png, boss_bg2.png, boss_bg3.png，傷害遞增）
         const bossStagesData = [
             {
                 stage: 1,
                 bossName: "冰霜巨獸",
-                bossImg: "images/杜倫.png",
-                bossBg: "images/boss_bg1.png",
-                wrongDamage: 25, // 答錯扣25點 (容錯4次)
+                bossImg: "images/杜倫.webp",
+                bossBg: "images/boss_bg1.webp",
+                wrongDamage: 25,
                 questions: [
                     { q: "蛇屬於外溫動物，在寒冷的季節，有些蛇會利用休眠的方式度過寒冬。", options: ["○ 正確", "✕ 錯誤"], answer: 0 },
                     { q: "冬季時，如果偶爾出現溫暖的陽光，龜會躲在水裡避免晒傷。", options: ["○ 正確", "✕ 錯誤"], answer: 1 },
@@ -1299,9 +1329,9 @@
             {
                 stage: 2,
                 bossName: "烈焰魔龍",
-                bossImg: "images/菲尼克斯.png",
-                bossBg: "images/boss_bg2.png",
-                wrongDamage: 34, // 答錯扣34點 (容錯3次)
+                bossImg: "images/菲尼克斯.webp",
+                bossBg: "images/boss_bg2.webp",
+                wrongDamage: 34,
                 questions: [
                     { q: "內溫動物主要是從外界環境吸收熱來維持體溫，而外溫動物主要是利用身體內部所產生的熱量來維持體溫。", options: ["○ 正確", "✕ 錯誤"], answer: 1 },
                     { q: "下列何者不是寒冷時人類用來幫助維持適當體溫的方式？", options: ["血管收縮", "食慾增加", "肌肉顫抖", "休眠"], answer: 3 },
@@ -1313,9 +1343,9 @@
             {
                 stage: 3,
                 bossName: "闇夜獸王",
-                bossImg: "images/闇夜獸王.png",
-                bossBg: "images/boss_bg3.png",
-                wrongDamage: 50, // 答錯扣50點 (答錯兩題就陣亡)
+                bossImg: "images/闇夜獸王.webp",
+                bossBg: "images/boss_bg3.webp",
+                wrongDamage: 50,
                 questions: [
                     { q: "內溫動物體溫維持在一定範圍內，下列哪一種動物和人類一樣屬於內溫動物？", options: ["龜", "北極熊", "蛇", "蜥蜴"], answer: 1 },
                     { q: "下列哪一個選項的動物都是外溫動物？", options: ["蜥蜴、蛙、鴨", "鯨、蝗蟲、龜", "龜、蜥蜴、蛇", "鱷魚、狗、蛇"], answer: 2 },
@@ -1338,8 +1368,8 @@
 
         let selectedCharacter = {
             name: "實習小博士",
-            img: "images/實習小博士.png",
-            battleImg: "images/實習小博士(戰).png"
+            img: "images/實習小博士.webp",
+            battleImg: "images/實習小博士(戰).webp"
         };
 
         let currentBossStageIndex = 0;
@@ -1613,17 +1643,34 @@
                     currentBossQIndex = 0;
                     bossHp = 100;
 
+                    // 檢查是否為最後一關 (Stage 3 結束)
                     if (currentBossStageIndex >= bossStagesData.length) {
-                        showModal("👑 恭喜完全征服三位魔王！", "太神啦！你連續擊敗 3 位強大魔王，贏得無上榮譽與大師頭銜！", () => {
-                            initBossGame();
-                        });
+                        showModal(
+                            "👑 恭喜完全征服三位魔王！", 
+                            "太神啦！你連續擊敗 3 位強大魔王，贏得無上榮譽與大師頭銜！點擊下方按鈕即可重新挑戰！", 
+                            () => {
+                                initBossGame(); // 點擊後重新開始魔王挑戰
+                            }
+                        );
+                        // 將結算彈窗按鈕文字改回「重新挑戰」
+                        document.getElementById('modal-action-btn').innerText = "重新挑戰";
                         checkBadgesUnlockConditions();
                         playSound('win');
                         return;
                     } else {
-                        playerHp = 100;
-                        updateBattleUI();
-                        updateDoctorSpeech(`🎉 幹得好！上一位魔王已被擊敗，更強大的新魔王【${bossStagesData[currentBossStageIndex].bossName}】登場！生命值已恢復至 100！`, 'happy');
+                        // 還沒打完前兩關，顯示「進入下一關」
+                        document.getElementById('modal-action-btn').innerText = "進入下一關";
+                        showModal(
+                            `🎉 成功擊敗【${currentStageObj.bossName}】！`, 
+                            `太棒了！你順利通過了第 ${currentStageObj.stage} 關！準備迎戰下一位更強大的魔王吧！`, 
+                            () => {
+                                playerHp = 100;
+                                updateBattleUI();
+                                loadBossQuestion();
+                                updateDoctorSpeech(`🎉 新魔王【${bossStagesData[currentBossStageIndex].bossName}】登場！生命值已恢復至 100！`, 'happy');
+                            }
+                        );
+                        return;
                     }
                 }
 
@@ -1646,6 +1693,7 @@
                 updateBattleUI();
 
                 if (playerHp <= 0) {
+                    document.getElementById('modal-action-btn').innerText = "重新挑戰";
                     showModal("💥 挑戰失敗！", "你的血量歸零了！被魔王擊敗，請點擊確定按鈕重新挑戰！", () => {
                         initBossGame();
                     });
@@ -1667,11 +1715,11 @@
         }
 
         function checkBadgesUnlockConditions() {
-            if (combo >= 20) unlockedBadges[1] = true; // 20連擊大師
-            if (currentBossStageIndex >= bossStagesData.length && bossGameStartedWithoutDamage) unlockedBadges[2] = true; // 無傷無敵戰戰神
-            if (xp >= 1500) unlockedBadges[3] = true; // 傳奇生物大師
+            if (combo >= 20) unlockedBadges[1] = true;
+            if (currentBossStageIndex >= bossStagesData.length && bossGameStartedWithoutDamage) unlockedBadges[2] = true;
+            if (xp >= 1500) unlockedBadges[3] = true;
             if (unlockedBadges[1] && unlockedBadges[2] && unlockedBadges[3]) {
-                unlockedBadges[4] = true; // 全知全能生物學家
+                unlockedBadges[4] = true;
             }
         }
 
